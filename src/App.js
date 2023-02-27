@@ -1,10 +1,12 @@
 import './App.css';
 import {Box,Typography} from '@mui/material' 
+import {Navbar,TodoBody} from './components'
 
 function App() {
   return (
     <Box>
-      <Typography variant='h1' color='black'>todoapp</Typography>
+      <Navbar/>
+      <TodoBody/>
     </Box>
   );
 }
