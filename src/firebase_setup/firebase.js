@@ -1,10 +1,11 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {getFirestore} from "@firebase"
+import {getFirestore} from "@firebase/firestore"
 
 const firebaseConfig = {
   apiKey:process.env.REACT_APP_apiKey,
   authDomain: "my-todo-app-c0a2c.firebaseapp.com",
+  databaseURL: "https://my-todo-app-c0a2c-default-rtdb.firebaseio.com",
   projectId: "my-todo-app-c0a2c",
   storageBucket: "my-todo-app-c0a2c.appspot.com",
   messagingSenderId: "77361045821",
@@ -14,4 +15,4 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const firebase=getFirestore(app)
+export const db=getFirestore(app)
