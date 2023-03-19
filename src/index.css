@@ -11,3 +11,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.login-bg{
+  display:flex;
+  height: 100vh;
+  background: rgb(239,240,198);
+  background: linear-gradient(90deg, rgba(239,240,198,1) 0%, rgba(201,30,186,1) 52%, rgba(75,75,207,1) 100%);
+}
+
+.google-login{
+  display:flex;
+  justify-content:center;
+  margin:3rem 1rem;
+  border-radius:10px;
+  padding:0.7rem;
+  cursor:pointer;
+  transition: 0.7s;
+}
+.google-login:hover{
+  border:1px solid blue;
+}
+
+

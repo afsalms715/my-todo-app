@@ -1,13 +1,22 @@
 import './App.css';
-import {Box,Typography} from '@mui/material' 
-import {Navbar,TodoBody} from './components'
+import {Box} from '@mui/material' 
+import {Login, Navbar,TodoForm} from './components'
+import {DataProvider} from './context/DataProvider'
+import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 
 function App() {
   return (
-    <Box>
+    <DataProvider>
+      <Box >
       <Navbar/>
-      <TodoBody/>
-    </Box>
+        <Router>
+          <Routes>
+            <Route path='/' element={<Login/>}/>
+            <Route path='/Todo' element={<TodoForm/>}/> 
+          </Routes>
+        </Router>
+      </Box>
+    </DataProvider>
   );
 }
 

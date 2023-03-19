@@ -1,42 +1,60 @@
 import {database} from '../firebase_setup/firebase'
 import {set,ref,onValue,push,remove} from 'firebase/database'
-import {useState,useEffect,useRef} from 'react'
-import dayjs from 'dayjs';
+import {useEffect,useRef} from 'react'
 import { TextField,Stack,Button,CircularProgress} from '@mui/material'
 import {DeadlinePicker, TodoComplited} from './'
 import { Box } from '@mui/system'
+import AddIcon from '@mui/icons-material/Add';
+import {useContext} from 'react'
+import { TodoContext } from '../context/DataProvider';
+import {useNavigate} from 'react-router-dom'
 
 
 const TodoForm = () => {
+    const {user,setUser,TodoText,setTodoText,deadline,setDeadline,Todos,setTodos
+        ,isloading,setLoading,empty,setEmpty}=useContext(TodoContext)
+    const navigate=useNavigate()    
+    useEffect(()=>{
+        console.log(JSON.parse(sessionStorage.getItem('user')))
+        if(!user && JSON.parse(sessionStorage.getItem('user'))==null){
+            navigate('/')
+        }else{
+            setUser(JSON.parse(sessionStorage.getItem('user')))
+        }
+        console.log(user?.uid)
+    },[])
+
     const txtTodo=useRef(null)//for textfield focus
-    const[TodoText,setTodoText]=useState('')//sate for todo text
-    const [deadline, setDeadline] =useState(dayjs(Date()));//for deadline
-    const[Todos,setTodos]=useState()//to store the todos read from rtdb
-    const[isloading,setLoading]=useState(false)//saving data loading...
+    
 
     const saveTodo=()=>{
-        try{
-            //save todo to rtdb 
-            setLoading(true)
-            set(push(ref(database,'sample')),{
-                todo:TodoText,
-                deadline:Date(deadline).slice(0,24),
-                isDone:false}).then(()=>{
-                    console.log('saved')
-                    setLoading(false)
-                    setTodoText('')
-                    setDeadline(Date())
-                    readTodos()
-                    txtTodo.current.focus()
-                })   
-        }catch(err){
-            console.log(err)
+      if(TodoText){  
+            try{
+                //save todo to rtdb
+                setEmpty(false) 
+                setLoading(true)
+                set(push(ref(database,`sample/${user.uid}`)),{
+                    todo:TodoText,
+                    deadline:Date(deadline).slice(0,24),
+                    isDone:false}).then(()=>{
+                        console.log('saved')
+                        setLoading(false)
+                        setTodoText('')
+                        setDeadline(Date())
+                        readTodos()
+                        txtTodo.current.focus()
+                    })   
+            }catch(err){
+                console.log(err)
+            }
+        }else{
+            setEmpty(true)
         }
     }
 
     const readTodos=async ()=>{
         //read todos from rtdb
-        await onValue(ref(database,'sample'),(snapshot)=>{//onValue triger when data change
+        await onValue(ref(database,`sample/${user.uid}`),(snapshot)=>{//onValue triger when data change
             const childNode=[]//save desc order todo//first is last insertion
             const values=[]
             snapshot.forEach((node)=>{
@@ -45,14 +63,13 @@ const TodoForm = () => {
             childNode.map((node)=>{
                 values.push({key:node.key,val:node.val()})
             })
-            console.log(values)
             setTodos([values?.map((data)=>({id:data.key,isDone:data?.val?.isDone,task:data?.val?.todo,Deadline:data?.val?.deadline}))])
         })
     }
     const changeStatus=(parms)=>{
         console.log(parms)
         try{
-            set(ref(database,`sample/${parms.id}`),{
+            set(ref(database,`sample/${user.uid}/${parms.id}`),{
                 todo:parms?.task,
                 deadline:parms?.Deadline,
                 isDone:true})
@@ -61,20 +78,29 @@ const TodoForm = () => {
         }
     }
     const removeTodo=(parms)=>{
-        remove(ref(database,`sample/${parms.id}`)).then(()=>{
+        remove(ref(database,`sample/${user.uid}/${parms.id}`)).then(()=>{
             console.log('deleted')
         })
     }
     useEffect(()=>{
-        readTodos();
-    },[])
-    //console.log(Todos[0])  
-    Todos && console.log(Todos[0]?.filter(data=>data?.isDone==false))
+        if(TodoText){
+            setEmpty(false)
+        }
+    },[TodoText])
+    useEffect(()=>{
+        if(user){
+            readTodos();
+        }else{
+            navigate('/')
+        }
+    },[user])
   return (
+    <Box sx={{pt:'2rem',display:'flex',justifyContent:'center',height:'94.5vh'}}>
     <Box sx={{width:'100%',}}>
         <Stack direction={{xs:'column',sm:'row',}} sx={{gap:1,width:{xs:'98%',md:'70%'},marginX:'auto'}}>
-            <TextField 
-                label='Task'
+            <TextField
+                error={empty} 
+                label={empty==true?"please Enter Todo":"Task"}
                 inputRef={txtTodo}
                 autoFocus
                 multiline
@@ -94,7 +120,7 @@ const TodoForm = () => {
                 size='large' 
                 onClick={()=>{saveTodo()}}>
                     {isloading ?<div style={{diplay:'flex'}}><div className="spinner-border text-success spinner-border-sm" role="status">
-                                </div>saving...</div>:'ADD'}
+                                </div>saving...</div>:<AddIcon/>}
             </Button>
         </Stack>
         <Stack direction={{xs:'column',sm:'row'}} sx={{gap:1,width:{xs:'98%',md:'90%'},
@@ -106,6 +132,7 @@ const TodoForm = () => {
                 {Todos &&<TodoComplited head={'Complited'} removeTodo={removeTodo} todos={Todos[0]?.filter(data=>data?.isDone==true)}/>}
             </Box>
         </Stack>
+    </Box>
     </Box>
   )
 }

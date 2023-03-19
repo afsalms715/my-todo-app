@@ -1,107 +1,33 @@
-import {useEffect, useState,Fragment}from 'react';
-import {AppBar,Box,Toolbar,Typography,IconButton,
-        MenuItem,Menu,ListItem,ListItemButton,
-        ListItemText,Drawer} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import {AppBar,Box,Toolbar,Typography,IconButton} from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import {useContext} from 'react'
+import {TodoContext} from '../context/DataProvider'
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Navbar() {
-  const [auth, setAuth] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const[drawerState,setDrawerState]=useState(false)
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const drawelist=()=>{
-    const bttns=['Profile','Account','Logout']
-    return(
-    <Box
-        sx={{width:250}}
-        role="presentation"
-        onClick={()=>setDrawerState(false)}
-        onKeyDown={()=>setDrawerState(false)}
-        >
-         {bttns.map((lists)=>(
-            <ListItem  disablePadding>
-                <ListItemButton>
-                    <ListItemText>{lists}</ListItemText>
-                </ListItemButton>
-            </ListItem> 
-         ))            
-        }       
-    </Box>
-    )
-  }
-
-  const TemDrawer=()=>(
-    <div>
-    <Fragment>    
-            <IconButton
-                size="small"
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ mr: 2,display:{xs:'block',md:'none',} }}
-                onClick={()=>setDrawerState(true)}
-            >
-                <MenuIcon />
-            </IconButton>
-            <Drawer
-                anchor='left'
-                open={drawerState}
-                onClose={()=>setDrawerState(false)}
-                >
-                    {drawelist()}
-            </Drawer>
-    </Fragment>
-    </div>
-  )
-
+  const {user,setUser,registerWithGoogle}=useContext(TodoContext)
+  
   return (
     <Box sx={{ flexGrow: 1,position:'sticky',top:0,height:'35px'}}>
       <AppBar  sx={{height:'35px',}}>
         <Box sx={{mt:-2}}>
             <Toolbar >
-            <TemDrawer/>
             <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1, }}>
                 My Todo App
             </Typography>
-            {auth && (
+            {user && (
                 <div>
                 <IconButton
                     size="large"
                     aria-label="account of current user"
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
-                    onClick={handleMenu}
                     color="inherit"
                 >
-                    <AccountCircle />
+                    {user?<img src={user?.photoURL} style={{width:'25px',height:'25px',borderRadius:'50%'}}/>:<AccountCircle />}
+                    <Typography variant='body2' sx={{ml:'4px'}}>{user?.displayName}{user.displayName? <LogoutIcon sx={{ml:1}} onClick={()=>{setUser(null)}}/>:'Login'}</Typography>
                 </IconButton>
-                <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                </Menu>
+                
                 </div>
             )}
           

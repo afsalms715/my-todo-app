@@ -1,18 +1,20 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {getFirestore} from "@firebase/firestore"
+import {getDatabase} from 'firebase/database'
+import {getAuth} from 'firebase/auth'
 
 const firebaseConfig = {
-  apiKey:process.env.REACT_APP_apiKey,
-  authDomain: "my-todo-app-c0a2c.firebaseapp.com",
-  databaseURL: "https://my-todo-app-c0a2c-default-rtdb.firebaseio.com",
-  projectId: "my-todo-app-c0a2c",
-  storageBucket: "my-todo-app-c0a2c.appspot.com",
-  messagingSenderId: "77361045821",
-  appId: "1:77361045821:web:c279a59a2df2191796e554",
-  measurementId: "G-CLVDQBXMS4"
+  apiKey:`${process.env.REACT_APP_API_KEY}`,
+  authDomain: `${process.env.REACT_APP_authDomain}`,
+  databaseURL: `${process.env.REACT_APP_databaseURL}`,
+  projectId: `${process.env.REACT_APP_projectId}`,
+  storageBucket: `${process.env.REACT_APP_storageBucket}`,
+  messagingSenderId: `${process.env.REACT_APP_messagingSenderId}`,
+  appId: `${process.env.REACT_APP_appId}`,
+  measurementId: `${process.env.REACT_APP_measurementId}`
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db=getFirestore(app)
+export const database=getDatabase(app)
+export const auth=getAuth(app)
