@@ -1,8 +1,9 @@
 import {useEffect,} from 'react'
-import {useNavigate,Navigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import GoogleIcon from '@mui/icons-material/Google';
 import {useContext} from 'react'
 import { TodoContext } from '../context/DataProvider';
+import {Box} from '@mui/material'
 
 const Login = () => {
     const {user,registerWithGoogle}=useContext(TodoContext)
@@ -18,10 +19,10 @@ const Login = () => {
     },[user])
   return (
     <div className='login-bg'>
-        <div className='login-box' style={{background:'#fff',
+        <Box className='login-box' sx={{background:'#fff',
         margin:'auto',
         height:'50vh',
-        width:'25vw',
+        width:{xs:'95vw',md:'50vw'},
         borderRadius:'20px',
         boxShadow:'2px 2px'
     }}      >
@@ -31,7 +32,7 @@ const Login = () => {
             <div className='google-login' onClick={registerWithGoogle}>
                 <h6> using {<GoogleIcon sx={{color:'#1976d2'}}/>}oogle account</h6>          
             </div>     
-        </div>
+        </Box>
     </div>
   )
 }

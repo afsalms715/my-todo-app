@@ -1,6 +1,6 @@
 import React from 'react'
 import { DataGrid } from '@mui/x-data-grid'
-import { Button ,Box} from '@mui/material'
+import { Button } from '@mui/material'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 const TodoComplited = ({head,todos,changeStatus,removeTodo}) => {

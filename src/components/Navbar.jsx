@@ -5,7 +5,7 @@ import {TodoContext} from '../context/DataProvider'
 import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function Navbar() {
-  const {user,setUser,registerWithGoogle}=useContext(TodoContext)
+  const {user,setUser}=useContext(TodoContext)
   
   return (
     <Box sx={{ flexGrow: 1,position:'sticky',top:0,height:'35px'}}>
