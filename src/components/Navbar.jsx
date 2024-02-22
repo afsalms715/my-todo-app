@@ -24,7 +24,7 @@ export default function Navbar() {
                     aria-haspopup="true"
                     color="inherit"
                 >
-                    {user?<img src={user?.photoURL} style={{width:'25px',height:'25px',borderRadius:'50%'}}/>:<AccountCircle />}
+                    {user?<img alt='profile' src={user?.photoURL} style={{width:'25px',height:'25px',borderRadius:'50%'}}/>:<AccountCircle />}
                     <Typography variant='body2' sx={{ml:'4px'}}>{user?.displayName}{user.displayName? <LogoutIcon sx={{ml:1}} onClick={()=>{setUser(null)}}/>:'Login'}</Typography>
                 </IconButton>
                 
